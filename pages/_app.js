@@ -1,3 +1,4 @@
+
 // pages/_app.js
 import { useEffect } from 'react';
 import '../styles/globals.css';
