@@ -2,7 +2,7 @@ name: Supabase Keep-Alive
 
 on:
   schedule:
-    # الأفضل تشغيله كل 6 ساعات لضمان عدم احتساب فترة خمول طويلة
+    # تشغيله كل 6 ساعات
     - cron: "0 */6 * * *"
   workflow_dispatch: {}
 
@@ -12,7 +12,6 @@ jobs:
     steps:
       - name: Ping Supabase and Verify Status
         env:
-          # رابط مشروعك كما أرسلته
           SUPABASE_URL: 'https://sztcuvoksveyuilzqpko.supabase.co/rest/v1/app_settings?select=id&limit=1'
           SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
@@ -22,7 +21,6 @@ jobs:
           echo "📡 Connecting to Supabase..."
           
           for ((i=1; i<=MAX_RETRIES; i++)); do
-            # نرسل الطلب ونخزن كود الحالة فقط (مثل 200 أو 500)
             HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" -X GET "$SUPABASE_URL" \
               -H "apikey: $SUPABASE_KEY" \
               -H "Authorization: Bearer $SUPABASE_KEY")
