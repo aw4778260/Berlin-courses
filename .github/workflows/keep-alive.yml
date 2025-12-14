@@ -2,7 +2,7 @@ name: Supabase Keep-Alive
 
 on:
   schedule:
-    # تشغيله كل 6 ساعات
+    # الأفضل تشغيله كل 6 ساعات لضمان عدم احتساب فترة خمول طويلة
     - cron: "0 */6 * * *"
   workflow_dispatch: {}
 
@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Ping Supabase and Verify Status
         env:
-          SUPABASE_URL: 'https://sztcuvoksveyuilzqpko.supabase.co/rest/v1/app_settings?select=id&limit=1'
+          # تم تعديل الرابط لاستخدام select=* لتجنب خطأ عدم وجود عمود id
+          SUPABASE_URL: 'https://sztcuvoksveyuilzqpko.supabase.co/rest/v1/app_settings?select=*&limit=1'
           SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           MAX_RETRIES=5
@@ -21,6 +22,7 @@ jobs:
           echo "📡 Connecting to Supabase..."
           
           for ((i=1; i<=MAX_RETRIES; i++)); do
+            # نرسل الطلب ونخزن كود الحالة فقط
             HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" -X GET "$SUPABASE_URL" \
               -H "apikey: $SUPABASE_KEY" \
               -H "Authorization: Bearer $SUPABASE_KEY")
@@ -31,6 +33,11 @@ jobs:
             else
               echo "⚠️ Attempt $i/$MAX_RETRIES failed (Status: $HTTP_STATUS). Database might be sleeping..."
               
+              # طباعة رد السيرفر للمساعدة في التشخيص إذا فشل مرة أخرى (اختياري)
+              if [ "$HTTP_STATUS" -eq 400 ]; then
+                 echo "❌ Error 400: Check if Table or Column exists."
+              fi
+
               if [ $i -lt $MAX_RETRIES ]; then
                 echo "⏳ Waiting ${RETRY_DELAY} seconds for wake-up..."
                 sleep $RETRY_DELAY
