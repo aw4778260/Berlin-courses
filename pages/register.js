@@ -36,7 +36,7 @@ export default function Register() {
     }
     const usernameRegex = /^[a-zA-Z0-9]+$/;
     if (!usernameRegex.test(formData.username)) {
-        return showToast("⚠️ اسم المستخدم يجب أن يكون حروف إنجليزية وأرقام فقط", "error");
+        return showToast(" ⚠️ اسم المستخدم يجب أن يكون حروف إنجليزية وأرقام فقط بدون مسافات او رموز", "error");
     }
 
     setLoading(true);
