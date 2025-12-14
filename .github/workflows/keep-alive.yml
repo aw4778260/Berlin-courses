@@ -13,7 +13,7 @@ jobs:
       - name: Ping Supabase and Verify Status
         env:
           # رابط مشروعك كما أرسلته
-          SUPABASE_URL: 'https://guoobhdvfiqlvdomrbvo.supabase.co/rest/v1/users?select=id&limit=1'
+          SUPABASE_URL: 'https://sztcuvoksveyuilzqpko.supabase.co/rest/v1/app_settings?select=id&limit=1'
           SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           MAX_RETRIES=5
