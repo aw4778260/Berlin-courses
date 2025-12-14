@@ -11,6 +11,15 @@ export default async (req, res) => {
     return res.status(400).json({ success: false, message: 'جميع الحقول مطلوبة' });
   }
 
+  const usernameRegex = /^[a-zA-Z0-9]+$/;
+  
+  if (!usernameRegex.test(username)) {
+    return res.status(400).json({ 
+        success: false, 
+        message: 'اسم المستخدم يجب أن يحتوي على حروف إنجليزية وأرقام فقط (بدون مسافات أو رموز).' 
+    });
+  }
+
   if (password.length < 6) {
     return res.status(400).json({ success: false, message: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' });
   }
